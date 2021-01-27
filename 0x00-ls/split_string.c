@@ -44,17 +44,14 @@ int count_directories(char **str, int size)
  */
 char *get_command_options(char **str,  int argc)
 {
-	register int i = 0;
-	int j = 0;
+	register int i = 0, j = 0;
 	char *res = NULL;
-	char buffer[KILOBYTE] = {0};
 
 	res = (char *) malloc(sizeof(char) * FLAG_SIZE);
 	if (!res)
 		return (NULL);
 	_memset(res, 0,  sizeof(char) * FLAG_SIZE);
 	_strcat(res, "-");
-
 	for (i = 1; i < argc; i++)
 	{
 		if (isDash(str[i][0]))
@@ -76,21 +73,16 @@ char *get_command_options(char **str,  int argc)
 					_strcat(res, "l");
 					break;
 				default:
-					sprintf(buffer, "ls: option requires an argument -- %c\n", str[i][j]);
-					sprintf(buffer, "Try 'ls --help' for more information.\n");
-					_puts(buffer);
 					break;
 				}
 			}
 		}
 	}
-
 	if (_strlen(res) == 1)
 	{
 		free(res);
 		res = NULL;
 	}
-
 	return (res);
 }
 

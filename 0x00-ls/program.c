@@ -27,6 +27,9 @@ int main(int argc, char *argv[])
 		{
 			for (i = 0; i < dirpath_size; ++i)
 			{
+				if (i == 1)
+					_putchar('\n');
+
 				if (dirpath_size != 1)
 				{
 					sprintf(bufmsg, "%s:\n", dirpath[i]);
@@ -35,9 +38,10 @@ int main(int argc, char *argv[])
 				}
 
 				_ls_only(dirpath[i]);
-				_puts("\n");
-			}
 
+				_putchar('\n');
+			}
+			_putchar(FLUSH);
 			free(options_command);
 			free_array(dirpath, dirpath_size);
 		}
