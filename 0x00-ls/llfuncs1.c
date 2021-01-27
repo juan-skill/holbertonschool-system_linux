@@ -83,12 +83,13 @@ size_t printList(const linked_l *h)
 
 	while (h)
 	{
-		_puts(h->string);
-		_putchar(' ');
+		/* _puts(h->string); */
+		/* _putchar(' '); */
+		printf("%s ", h->string);
 		h = h->next;
 		count++;
 	}
-	_putchar(FLUSH);
+	/* _putchar(FLUSH); */
 
 	return (count);
 }

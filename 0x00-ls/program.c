@@ -27,25 +27,21 @@ int main(int argc, char *argv[])
 		{
 			for (i = 0; i < dirpath_size; ++i)
 			{
-				if (i == 1)
-					_putchar('\n');
+				if (i == 1 && dirpath_size > 1)
+					putchar('\n');
 
 				if (dirpath_size != 1)
 				{
-					sprintf(bufmsg, "%s:\n", dirpath[i]);
-					_puts(bufmsg);
-					_putchar(FLUSH);
+					sprintf(bufmsg, "%s:", dirpath[i]);
+					puts(bufmsg); /* _putchar(FLUSH); */
 				}
 
-				_ls_only(dirpath[i]);
-
-				_putchar('\n');
+				if (_ls_only(dirpath[i])) /* num of files and dir */
+					putchar('\n');
 			}
-			_putchar(FLUSH);
-			free(options_command);
+			free(options_command); /* _putchar(FLUSH); */
 			free_array(dirpath, dirpath_size);
 		}
-
 	}
 
 	return (EXIT_SUCCESS);

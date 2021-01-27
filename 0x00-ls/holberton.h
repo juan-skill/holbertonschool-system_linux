@@ -27,7 +27,7 @@
 typedef struct cml
 {
 	char *option_flag;
-	void (*fun_ptr)(char *file_name);
+	int (*fun_ptr)(char *file_name);
 } cml_t;
 
 /**
@@ -61,7 +61,7 @@ void freeList(linked_l *head);
 
 
 /* ls functions */
-void _ls_only(char *dirpath);
+int _ls_only(char *dirpath);
 
 
 /* print functions */

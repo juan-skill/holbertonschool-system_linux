@@ -47,11 +47,12 @@ void save_name(const struct stat *sb, struct dirent **entry,
  * _ls_only - print list the content of the current directory
  *
  * @dirpath: name of the current directory
- * Return: nothing
+ * Return: the number of files + directories scanne
  */
-void _ls_only(char *dirpath)
+int _ls_only(char *dirpath)
 {
 	DIR *dir = NULL;
+	int count = 0;
 	struct dirent *entry = NULL;
 	struct stat sb;
 	char filename[KILOBYTE] = {0};
@@ -61,7 +62,7 @@ void _ls_only(char *dirpath)
 	if (!dir)
 	{
 		errMsg(errno, dirpath);
-		return;
+		return (0);
 	}
 	for (;;)
 	{
@@ -77,13 +78,11 @@ void _ls_only(char *dirpath)
 
 		if (_strcmp(entry->d_name, ".") == 0 || _strcmp(entry->d_name, "..") == 0)
 			continue; /* Skip . and .. */
-
+		count++;
 		save_name(&sb, &entry, &files, &directories);
 	}
 	printList(files);
 	printList(directories);
-	/* _putchar('\n'); */
-	_putchar(FLUSH);
 	freeList(files);
 	freeList(directories);
 
@@ -91,4 +90,5 @@ void _ls_only(char *dirpath)
 		perror("readdir");
 	if (closedir(dir) == -1)
 		perror("closedir");
+	return (count);
 }

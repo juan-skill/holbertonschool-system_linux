@@ -35,13 +35,13 @@ void print_array(char **argv)
 	ptr = argv;
 	while (*ptr != NULL)
 	{
-		_puts(*ptr);
-		_putchar(' ');
-		_putchar('\n');
+		puts(*ptr);
+		putchar(' ');
+		putchar('\n');
 
 		ptr++;
 	}
 
 	/* _putchar('\n'); */
-	_putchar(FLUSH);
+	/* _putchar(FLUSH); */
 }
