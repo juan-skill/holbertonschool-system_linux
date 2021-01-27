@@ -34,6 +34,30 @@ int count_directories(char **str, int size)
 }
 
 
+/**
+ * isDir - check if it is a directory
+ * @dirpath: name of the directory
+ * Return: 0 if it is a directory
+ */
+int isDir(char *dirpath)
+{
+	DIR *directory = NULL;
+	int ret = 1;
+
+	directory = opendir(dirpath);
+	if (!directory)
+	{
+		if (errno == ENOTDIR)
+			ret = 0;
+		else
+			ret = ERROR_FOUND;
+	}
+
+	closedir(directory);
+
+	return (ret);
+}
+
 
 /**
  * get_command_options - splits string into an array of strings
@@ -123,6 +147,14 @@ size_t get_command_filename(char **str,  int argc, char ***dirpath)
 	/* j solo cambia cuando se cumple if conditional */
 	for (i = 0, j = 0; i < argc; i++)
 	{
+		if (!isDir(*(str + i)) && i != 0)
+		{
+			/* printf("It is a file %s\n", *(str + i)); */
+			/* print_filename(*(str + i)); */
+			puts(*(str + i));
+			continue;
+		}
+
 		if (!isDash(str[i][0]) && i != 0)
 		{
 			*(*dirpath + j) = _strdup(*(str + i));

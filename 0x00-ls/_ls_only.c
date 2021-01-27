@@ -7,15 +7,19 @@
  * @dirpath: name of the directory
  * Return: nothing
  */
-void errMsg(int err, char *dirpath)
+int errMsg(int err, char *dirpath)
 {
 	char buffer[KILOBYTE] = {0};
 
 	if (err == ENOENT)
-		sprintf(buffer, "./hls: cannot access %s", dirpath);
+		sprintf(buffer, "hls: cannot access %s", dirpath);
 	else if (err == EACCES)
-		sprintf(buffer, "./hls: cannot open directory %s", dirpath);
+		sprintf(buffer, "hls: cannot open directory %s", dirpath);
+	else if (err == ENOTDIR)
+		sprintf(buffer, "person %s", dirpath);
 	perror(buffer);
+
+	return (ERROR_FOUND);
 }
 
 /**
@@ -68,6 +72,32 @@ int check_hidden_files(struct dirent **entry)
 }
 
 /**
+ * isDird - check if it is a directory or file
+ *
+ * @dirpath: name of the directory
+ * Return: -1 if it is a directory or we have access mode otherwise 0
+ */
+int isDird(char *dirpath)
+{
+	DIR *dir = NULL;
+
+	dir = opendir(dirpath);
+	if (!dir)  /* if there is an error return -1 and then print dirname */
+	{
+		if (errno == ENOENT)
+			return (ERROR_FOUND);
+		if (errno == EACCES)
+			return (ERROR_FOUND);
+	}
+
+	if (closedir(dir) == -1)
+		perror("closedir");
+
+	return (EXIT_SUCCESS);
+}
+
+
+/**
  * _ls_only - print list the content of the current directory
  *
  * @dirpath: name of the current directory
@@ -83,10 +113,9 @@ int _ls_only(char *dirpath)
 	linked_l *files = NULL, *directories = NULL;
 
 	dir = opendir(dirpath);
-	if (!dir)
+	if (!dir)  /* if there is an error return -1 and then print dirname */
 	{
-		errMsg(errno, dirpath);
-		return (0);
+		return (errMsg(errno, dirpath));
 	}
 	for (;;)
 	{
@@ -106,6 +135,7 @@ int _ls_only(char *dirpath)
 		save_name(&sb, &entry, &files, &directories);
 	}
 	printList(files);
+	files != NULL ? putchar(' ') : 1;
 	printList(directories);
 	freeList(files);
 	freeList(directories);

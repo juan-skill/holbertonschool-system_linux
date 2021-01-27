@@ -15,6 +15,7 @@
 #define KILOBYTE 1024
 #define FLUSH -1
 #define FLAG_SIZE sizeof("-1aAlrStR")
+#define ERROR_FOUND -1
 
 /**
  * struct cml - struct to choose the right function depending
@@ -63,6 +64,9 @@ void freeList(linked_l *head);
 /* ls functions */
 int _ls_only(char *dirpath);
 
+
+char *print_filename(char *str);
+int isDird(char *dirpath);
 
 /* print functions */
 int _putchar(char c);

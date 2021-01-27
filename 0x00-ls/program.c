@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
 	char **dirpath = NULL;
 	char bufmsg[KILOBYTE] = {0};
 	size_t dirpath_size = 0, i = 0;
+	int is_id = 0;
 
 	if (argc == 1) /* No arguments - use current directory */
 		_ls_only(".");
@@ -27,16 +28,20 @@ int main(int argc, char *argv[])
 		{
 			for (i = 0; i < dirpath_size; ++i)
 			{
-				if (i == 1 && dirpath_size > 1)
-					putchar('\n');
-
-				if (dirpath_size != 1)
+				/* if (i == 1 && dirpath_size > 1)  */
+					/* putchar('\n'); */
+				is_id = (isDird(dirpath[i]));
+				if (dirpath_size != 1 && is_id != ERROR_FOUND)
 				{
 					sprintf(bufmsg, "%s:", dirpath[i]);
 					puts(bufmsg); /* _putchar(FLUSH); */
 				}
 
-				if (_ls_only(dirpath[i])) /* num of files and dir */
+				/* if (_ls_only(dirpath[i])) /\* num of files and dir *\/ */
+				/* putchar('\n'); */
+
+				_ls_only(dirpath[i]);
+				if (is_id != ERROR_FOUND)
 					putchar('\n');
 			}
 			free(options_command); /* _putchar(FLUSH); */
