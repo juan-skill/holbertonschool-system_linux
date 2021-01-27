@@ -44,6 +44,30 @@ void save_name(const struct stat *sb, struct dirent **entry,
 }
 
 /**
+ * check_hidden_files - determinates if there is a hidden file
+ *
+ * @entry: name of filename
+ * Return: 1 if it found a dot into filename
+ */
+int check_hidden_files(struct dirent **entry)
+{
+	int i = 0;
+
+	if (_strcmp((*entry)->d_name, ".") == 0 ||
+	    _strcmp((*entry)->d_name, "..") == 0)
+		return (1);
+
+	/* 46 is . (dot askii)   start in dot or dot and something more */
+	if ((*entry)->d_name[i] == 46 && (*entry)->d_name[i + 1] == 46)
+		return (1);
+
+	if ((*entry)->d_name[i] == 46 && (*entry)->d_name[i + 1] != 46)
+		return (1);
+
+	return (0);
+}
+
+/**
  * _ls_only - print list the content of the current directory
  *
  * @dirpath: name of the current directory
@@ -76,7 +100,7 @@ int _ls_only(char *dirpath)
 		if (lstat(filename, &sb) == -1)
 			perror("lstat ");
 
-		if (_strcmp(entry->d_name, ".") == 0 || _strcmp(entry->d_name, "..") == 0)
+		if (check_hidden_files(&entry))
 			continue; /* Skip . and .. */
 		count++;
 		save_name(&sb, &entry, &files, &directories);
