@@ -34,17 +34,22 @@ int errMsg(int err, char *dirpath)
 void save_name(const struct stat *sb, struct dirent **entry,
 	  linked_l **files, linked_l **directories)
 {
+	(void) files;
+	(void) directories;
 	switch (sb->st_mode & S_IFMT)
 	{
 	case S_IFREG:
-		addNode(*(&files), (*entry)->d_name);
+		/* addNode(*(&files), (*entry)->d_name); */
+		printf("%s", (*entry)->d_name);
 		break;
 	case S_IFDIR:
-		addNode(*(&directories), (*entry)->d_name);
+		printf("%s", (*entry)->d_name);
+		/* addNode(*(&directories), (*entry)->d_name); */
 		break;
 	default:
 		break;
 	}
+	putchar(' ');
 }
 
 /**
@@ -134,11 +139,11 @@ int _ls_only(char *dirpath)
 		count++;
 		save_name(&sb, &entry, &files, &directories);
 	}
-	printList(files);
-	files != NULL ? putchar(' ') : 1;
-	printList(directories);
-	freeList(files);
-	freeList(directories);
+	/* printList(files); */
+	/* files != NULL ? putchar(' ') : 1; */
+	/* printList(directories); */
+	/* freeList(files); */
+	/* freeList(directories); */
 
 	if (errno && !entry)
 		perror("readdir");

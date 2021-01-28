@@ -45,3 +45,31 @@ void print_array(char **argv)
 	/* _putchar('\n'); */
 	/* _putchar(FLUSH); */
 }
+
+
+/**
+ * get_current_directory - splits string into an array of strings
+ * separated by spaces
+ *
+ * @dirpath: pointer to the array of strings
+ *
+ * Return: size of the dirpath array
+ */
+size_t get_current_directory(char ***dirpath)
+{
+	register int i = 0;
+
+	/* recibimos un triple puntero pero anteponemos asterisco */
+	/* para que sea doble *dirpath */
+	/* dirpath = "." 2 positions */
+	*dirpath = (char **) malloc(sizeof(char *) * _strlen(CURRENT_DIRECTORY));
+	if (!dirpath)
+		return (0);
+
+	_memset(*dirpath, 0,  sizeof(char *) * _strlen(CURRENT_DIRECTORY));
+
+	*(*dirpath + i) = _strdup(CURRENT_DIRECTORY);
+
+
+	return (i + 1);
+}

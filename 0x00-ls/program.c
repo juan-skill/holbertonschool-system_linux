@@ -16,38 +16,36 @@ int main(int argc, char *argv[])
 	char bufmsg[KILOBYTE] = {0};
 	size_t dirpath_size = 0, i = 0;
 	int is_id = 0;
+	int (*option_flag)(char *dir);
 
-	if (argc == 1) /* No arguments - use current directory */
-		_ls_only(".");
-	else
+	options_command = get_command_options(argv, argc);
+	dirpath_size = get_command_filename(argv, argc, &dirpath);
+
+	option_flag = (options_command == NULL) ?
+		get_op_func(DEFAULT_OPTION_COMMAND) :
+		get_op_func(options_command);
+
+	if (!option_flag)
+		return (EXIT_SUCCESS);
+
+	if (!dirpath)
+		dirpath_size = get_current_directory(&dirpath);
+
+	for (i = 0; i < dirpath_size; ++i)
 	{
-		options_command = get_command_options(argv, argc);
-		dirpath_size = get_command_filename(argv, argc, &dirpath);
-
-		if (options_command == NULL)
+		is_id = (isDird(dirpath[i]));
+		if (dirpath_size != 1 && is_id != ERROR_FOUND)
 		{
-			for (i = 0; i < dirpath_size; ++i)
-			{
-				/* if (i == 1 && dirpath_size > 1)  */
-					/* putchar('\n'); */
-				is_id = (isDird(dirpath[i]));
-				if (dirpath_size != 1 && is_id != ERROR_FOUND)
-				{
-					sprintf(bufmsg, "%s:", dirpath[i]);
-					puts(bufmsg); /* _putchar(FLUSH); */
-				}
-
-				/* if (_ls_only(dirpath[i])) /\* num of files and dir *\/ */
-				/* putchar('\n'); */
-
-				_ls_only(dirpath[i]);
-				if (is_id != ERROR_FOUND)
-					putchar('\n');
-			}
-			free(options_command); /* _putchar(FLUSH); */
-			free_array(dirpath, dirpath_size);
+			sprintf(bufmsg, "%s:", dirpath[i]);
+			puts(bufmsg); /* _putchar(FLUSH); */
 		}
+
+		option_flag(dirpath[i]);
+		if (is_id != ERROR_FOUND)
+			putchar('\n');
 	}
+	free(options_command); /* _putchar(FLUSH); */
+	free_array(dirpath, dirpath_size);
 
 	return (EXIT_SUCCESS);
 }

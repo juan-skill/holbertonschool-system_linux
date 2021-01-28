@@ -16,6 +16,8 @@
 #define FLUSH -1
 #define FLAG_SIZE sizeof("-1aAlrStR")
 #define ERROR_FOUND -1
+#define DEFAULT_OPTION_COMMAND "one"
+#define CURRENT_DIRECTORY "."
 
 /**
  * struct cml - struct to choose the right function depending
@@ -47,7 +49,13 @@ typedef struct linkedList
 	struct linkedList *next;
 } linked_l;
 
-void opcode(char *, char *);
+
+int (*get_op_func(char *s))(char *);
+/* ls functions */
+int _ls_only(char *dirpath);
+int _ls_minus_one(char *dirpath);
+
+
 
 char *get_command_options(char **str,  int argc);
 size_t get_command_filename(char **str,  int argc, char ***dirpath);
@@ -61,12 +69,14 @@ size_t printList(const linked_l *h);
 void freeList(linked_l *head);
 
 
-/* ls functions */
-int _ls_only(char *dirpath);
-
-
 char *print_filename(char *str);
 int isDird(char *dirpath);
+size_t get_current_directory(char ***dirpath);
+int errMsg(int err, char *dirpath);
+void save_name(const struct stat *sb, struct dirent **entry,
+	       linked_l **files, linked_l **directories);
+int check_hidden_files(struct dirent **entry);
+
 
 /* print functions */
 int _putchar(char c);
