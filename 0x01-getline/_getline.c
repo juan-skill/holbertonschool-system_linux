@@ -1,5 +1,57 @@
 #include "_getline.h"
 
+/**
+ * _strchr - Returns a pointer to the first occurence of c char in string s.
+ * @s: The string
+ * @c: The char
+ * Return: A pointer to the position or NULL
+ */
+char *_strchr(char *s, int c)
+{
+	while (*s != '\0')
+	{
+		if (*s == c)
+			return (s);
+		s++;
+	}
+
+	return (NULL);
+}
+
+
+/**
+ * _strlen - returns the length of a string
+ * @s: string s
+ * Return: length of string
+ */
+int _strlen(char *s)
+{
+	char *p = s;
+
+	while (*s)
+		s++;
+	return (s - p);
+}
+
+
+/**
+ * *_strcpy - copies the string pointed to by src,
+ * including the terminating null byte
+ * @dest: copied string
+ * @src: string to be copied
+ * Return: pointer to new copied string
+ */
+char *_strcpy(char *dest, char *src)
+{
+	char *ptr = dest;
+
+	while (*src)
+		*dest++ = *src++;
+	*dest = '\0';
+
+	return (ptr);
+}
+
 
 /**
  * _memset - fills the first n bytes of the memory area
@@ -31,34 +83,43 @@ void *_memset(void *arr, char c, size_t size)
  */
 char *_getline(const int fd)
 {
-	ssize_t num_read = 0;
-	char buff[READ_SIZE], *read_line = NULL;
-	int i = 0;
+	ssize_t num_read = 0, i = 0;
+	char buff_read[READ_SIZE + 1], *read_line = NULL, *new_line = NULL;
+	static char buffer_static[BUFF_STAT];
 
-	read_line = (char *) malloc(sizeof(char) * (READ_SIZE + 1));
+	read_line = (char *) malloc(sizeof(char) * (BUFF_STAT + 1));
 	if (!read_line)
 		return (NULL);
+	_memset(read_line, '\0', sizeof(char) * (BUFF_STAT + 1));
+	_strcpy(read_line, buffer_static);
+	_memset(buffer_static, '\0', sizeof(char) * (BUFF_STAT));
 
-	_memset(read_line, '\0', sizeof(char) * (READ_SIZE + 1));
-
-	while ((num_read = read(fd, buff, BUFF_SIZE)))
+	new_line = _strchr(read_line, 10);
+	if (new_line != NULL)
 	{
-		if (buff[0] != '\n' && buff[0] != 12)
-		{
-			*(read_line + i) = buff[0], i++;
-		}
+		new_line[0] = '\0', new_line++;
+		_strcpy(buffer_static, new_line);
+		return (read_line);
+	}
+	i = _strlen(read_line);
+	while ((num_read = read(fd, buff_read, READ_SIZE)))
+	{
+		buff_read[num_read] = '\0';
+		new_line = _strchr(buff_read, 10);
+		if (new_line == NULL)
+			_strcpy((read_line + i), buff_read), i = i + num_read;
 		else
 		{
-			*(read_line + i) = '\0';
+			new_line[0] = '\0', new_line++;
+			_strcpy((read_line + i), buff_read);
+			_strcpy(buffer_static, new_line);
 			break;
 		}
 	}
-
 	if (num_read == -1 || num_read == 0)
 	{
 		free(read_line);
 		return (NULL);
 	}
-
 	return (read_line);
 }

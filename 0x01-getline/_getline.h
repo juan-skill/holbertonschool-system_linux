@@ -8,8 +8,8 @@
 #include <string.h> /* memset */
 #include <errno.h>
 
-#define READ_SIZE 1024
-#define BUFF_SIZE 1
+#define READ_SIZE 4
+#define BUFF_STAT 218
 
 char *_getline(const int fd);
 
