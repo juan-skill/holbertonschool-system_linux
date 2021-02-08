@@ -1,5 +1,21 @@
 #include "_getline.h"
 
+
+/**
+ * _strlen - returns the length of a string
+ * @s: string s
+ * Return: length of string
+ */
+int _strlen(char *s)
+{
+	char *p = s;
+
+	while (*s)
+		s++;
+
+	return (s - p);
+}
+
 /**
  * _strchr - Returns a pointer to the first occurence of c char in string s.
  * @s: The string
@@ -16,21 +32,6 @@ char *_strchr(char *s, int c)
 	}
 
 	return (NULL);
-}
-
-
-/**
- * _strlen - returns the length of a string
- * @s: string s
- * Return: length of string
- */
-int _strlen(char *s)
-{
-	char *p = s;
-
-	while (*s)
-		s++;
-	return (s - p);
 }
 
 
@@ -52,26 +53,75 @@ char *_strcpy(char *dest, char *src)
 	return (ptr);
 }
 
-
 /**
- * _memset - fills the first n bytes of the memory area
- *               pointed to by @arr with the constant byte @c
- *
- * @arr: a pointer to the memory area to be filled
- * @c: the character to fill the memory area
- * @size: the number of bytes to be filled
+ * free_listint - frees a listint_t list
+ * @head: pointer to list to be freed
  * Return: void
  */
-void *_memset(void *arr, char c, size_t size)
+void free_listint(linkedfd_t *head)
 {
-	unsigned int index = 0;
-	char *memory = arr, value = c;
+	linkedfd_t *node = NULL, *tmp = NULL;
 
-	for (index = 0; index < size; index++)
-		*(memory + index) = value;
-
-	return (memory);
+	tmp = head;
+	while (tmp != NULL)
+	{
+		node = tmp;
+		tmp = tmp->next;
+		free(node);
+	}
 }
+
+
+/**
+ * addnodefd - adding a node into a singly liked list for fd.
+ *
+ * @fd: The file descriptor
+ * Return: A pointer to a node from listfd_s or NULL if failure.
+ */
+linkedfd_t *addnodefd(int fd)
+{
+	static linkedfd_t *head;
+	linkedfd_t *node = NULL, *tmp = NULL, *prev = NULL;
+
+	if (fd == -1)
+	{
+		tmp = head;
+		free_listint(tmp);
+		head = NULL;
+		return (NULL);
+	}
+
+	node = (linkedfd_t *) malloc(sizeof(linkedfd_t));
+	if (node == NULL)
+		return (NULL);
+
+	node->fd = fd, node->buffer_static[0] = '\0'; /* set all array */
+	node->next = NULL;
+	if (head == NULL)
+		head = node;
+	else
+	{
+		tmp = head;
+		while (tmp != NULL)
+		{
+			if (tmp->fd != fd)
+			{
+				prev = tmp;
+				tmp = tmp->next;
+			}
+			else
+				break;
+		}
+		if (tmp != NULL)
+		{	free(node);
+			return (tmp);
+		}
+		prev->next = node;
+	}
+	return (node);
+}
+
+
 
 
 /**
@@ -85,19 +135,23 @@ char *_getline(const int fd)
 {
 	ssize_t num_read = 0, i = 0;
 	char buff_read[READ_SIZE + 1], *read_line = NULL, *new_line = NULL;
-	static char buffer_static[BUFF_STAT];
+	char *buffer_static = NULL;
+	linkedfd_t *node = NULL;
 
+	while ((node = addnodefd(fd)) == NULL)
+		return (NULL);
+	buffer_static = node->buffer_static;
 	read_line = (char *) malloc(sizeof(char) * (BUFF_STAT + 1));
 	if (!read_line)
 		return (NULL);
-	_memset(read_line, '\0', sizeof(char) * (BUFF_STAT + 1));
+	memset(read_line, '\0', sizeof(char) * (BUFF_STAT + 1));
 	_strcpy(read_line, buffer_static);
-	_memset(buffer_static, '\0', sizeof(char) * (BUFF_STAT));
-
+	memset(buffer_static, '\0', sizeof(char) * (BUFF_STAT));
 	new_line = _strchr(read_line, 10);
 	if (new_line != NULL)
 	{
-		new_line[0] = '\0', new_line++;
+		new_line[0] = '\0';
+		new_line++;
 		_strcpy(buffer_static, new_line);
 		return (read_line);
 	}
@@ -109,16 +163,13 @@ char *_getline(const int fd)
 		if (new_line == NULL)
 			_strcpy((read_line + i), buff_read), i = i + num_read;
 		else
-		{
-			new_line[0] = '\0', new_line++;
-			_strcpy((read_line + i), buff_read);
-			_strcpy(buffer_static, new_line);
+		{	new_line[0] = '\0', new_line++;
+			_strcpy((read_line + i), buff_read), _strcpy(buffer_static, new_line);
 			break;
 		}
 	}
 	if (num_read == -1 || num_read == 0)
-	{
-		free(read_line);
+	{	free(read_line);
 		return (NULL);
 	}
 	return (read_line);
