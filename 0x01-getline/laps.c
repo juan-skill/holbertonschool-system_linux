@@ -15,6 +15,7 @@ linked_l *insert_sort(linked_l **head, int car_number)
 	linked_l *newNode = NULL;
 	linked_l *last = NULL;
 
+	last = *head;
 	newNode = (linked_l *) malloc(sizeof(linked_l));
 	if (!newNode)
 	{
@@ -26,20 +27,26 @@ linked_l *insert_sort(linked_l **head, int car_number)
 	newNode->laps = 0;
 	newNode->next = NULL;
 
-	if (!*head || (*head)->car > newNode->car)
+	if (!*head)
 	{
+		*head = newNode;
+	}
+	else if ((last)->car > newNode->car)
+	{
+		newNode->next = last;
 		*head = newNode;
 		return (newNode);
 	}
+	else
+	{
+		while (last->next != NULL && last->next->car < newNode->car)
+			last = last->next;
 
-	last = (*head);
-	while (last->next != NULL && last->next->car < newNode->car)
-		last = last->next;
+		newNode->next = last->next;
+		last->next = newNode;
+	}
 
-	newNode->next = last->next;
-	last->next = newNode;
-
-	return (last);
+	return (newNode);
 }
 
 /**
