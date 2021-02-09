@@ -11,6 +11,8 @@
 
 #define READ_SIZE 4
 #define BUFF_STAT 218
+#define OTHER_CHAR '\b'
+#define NULL_CHAR '\0'
 
 
 /**

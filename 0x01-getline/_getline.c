@@ -36,24 +36,6 @@ char *_strchr(char *s, int c)
 
 
 /**
- * *_strcpy - copies the string pointed to by src,
- * including the terminating null byte
- * @dest: copied string
- * @src: string to be copied
- * Return: pointer to new copied string
- */
-char *_strcpy(char *dest, char *src)
-{
-	char *ptr = dest;
-
-	while (*src)
-		*dest++ = *src++;
-	*dest = '\0';
-
-	return (ptr);
-}
-
-/**
  * free_listint - frees a listint_t list
  * @head: pointer to list to be freed
  * Return: void
@@ -68,6 +50,29 @@ void free_listint(linkedfd_t *head)
 		node = tmp;
 		tmp = tmp->next;
 		free(node);
+	}
+}
+
+
+/**
+ * replace_other_char - set the characters the corresponding
+ * to null-char string
+ *
+ * @str: string to replace a character to another
+ * @len: size of the string
+ * @null: character to replace
+ * @nonull: charater replaced
+ *
+ * Return: void
+ */
+void replace_other_char(char *str, size_t len, char null, char nonull)
+{
+	size_t i = 0;
+
+	for (i = 0; i < len; ++i)
+	{
+		if (*(str + i) == null)
+			*(str + i) = nonull;
 	}
 }
 
@@ -144,33 +149,33 @@ char *_getline(const int fd)
 	read_line = (char *) malloc(sizeof(char) * (BUFF_STAT + 1));
 	if (!read_line)
 		return (NULL);
-	memset(read_line, '\0', sizeof(char) * (BUFF_STAT + 1));
-	_strcpy(read_line, buffer_static);
-	memset(buffer_static, '\0', sizeof(char) * (BUFF_STAT));
+	memset(read_line, NULL_CHAR, sizeof(char) * (BUFF_STAT + 1));
+	strcpy(read_line, buffer_static);
+	memset(buffer_static, NULL_CHAR, sizeof(char) * (BUFF_STAT));
 	new_line = _strchr(read_line, 10);
 	if (new_line != NULL)
-	{
-		new_line[0] = '\0';
-		new_line++;
-		_strcpy(buffer_static, new_line);
+	{	new_line[0] = NULL_CHAR, new_line++;
+		strcpy(buffer_static, new_line);
 		return (read_line);
 	}
 	i = _strlen(read_line);
 	while ((num_read = read(fd, buff_read, READ_SIZE)))
 	{
-		buff_read[num_read] = '\0';
+		buff_read[num_read] = NULL_CHAR;
+		replace_other_char(buff_read, num_read, NULL_CHAR, OTHER_CHAR);
 		new_line = _strchr(buff_read, 10);
 		if (new_line == NULL)
-			_strcpy((read_line + i), buff_read), i = i + num_read;
+			strcpy((read_line + i), buff_read), i = i + num_read;
 		else
-		{	new_line[0] = '\0', new_line++;
-			_strcpy((read_line + i), buff_read), _strcpy(buffer_static, new_line);
+		{	new_line[0] = NULL_CHAR, new_line++;
+			strcpy((read_line + i), buff_read), strcpy(buffer_static, new_line);
 			break;
 		}
 	}
-	if (num_read == -1 || num_read == 0)
+	if ((num_read == -1 || num_read == 0) && _strlen(read_line) == 0)
 	{	free(read_line);
 		return (NULL);
 	}
+	replace_other_char(read_line, _strlen(read_line), OTHER_CHAR, NULL_CHAR);
 	return (read_line);
 }
