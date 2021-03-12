@@ -8,4 +8,9 @@ CFLAGS = -g -Wall -Wextra -Werror -pedantic
 
 0-hreadelf: 0_main.c
 	$(CC) $(CFLAGS) 0_main.c -o 0-hreadelf
-	touch 0_main.c
+
+1-hreadelf: 1_main.c
+	$(CC) $(CFLAGS) 1_main.c -o 1-hreadelf
+
+2-hreadelf: 2_main.c
+	$(CC) $(CFLAGS) 2_main.c -o 2-hreadelf
