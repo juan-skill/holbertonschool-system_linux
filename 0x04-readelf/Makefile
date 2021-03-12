@@ -14,3 +14,6 @@ CFLAGS = -g -Wall -Wextra -Werror -pedantic
 
 2-hreadelf: 2_main.c
 	$(CC) $(CFLAGS) 2_main.c -o 2-hreadelf
+
+100-hreadelf: 2_main.c
+	$(CC) $(CFLAGS) 100_main.c -o 100-hreadelf
