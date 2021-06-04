@@ -15,6 +15,10 @@ SRC2 = strace_2.c
 OBJ2 = $(SRC2:.c=.o)
 NAME2 = strace_2
 
+SRC3 = strace_3.c
+OBJ3 = $(SRC3:.c=.o)
+NAME3 = strace_3
+
 strace_0: strace.h $(OBJ0)
 	$(CC) $(OBJ0) -o $(NAME0)
 
@@ -23,3 +27,6 @@ strace_1: strace.h $(OBJ1)
 
 strace_2: strace.h $(OBJ2)
 	$(CC) $(OBJ2) -o $(NAME2)
+
+strace_3: strace.h $(OBJ3)
+	$(CC) $(OBJ3) -o $(NAME3)
