@@ -75,4 +75,5 @@ typedef struct blur_portion_s
 void *thread_entry(void *arg);
 int tprintf(char const *format, ...);
 
+
 #endif
