@@ -10,6 +10,12 @@
 #include <signal.h>
 
 
+#define _GNU_SOURCE
+
+#include <sys/types.h>
+
+
+
 int handle_signal(void);
 void (*current_handler_signal(void))(int);
 int handle_sigaction(void);
@@ -19,5 +25,6 @@ int pid_exist(pid_t pid);
 void all_in_one(void);
 int sigset_init(sigset_t *set, int *signals);
 int signals_block(int *signals);
+int signals_unblock(int *signals);
 
 #endif
